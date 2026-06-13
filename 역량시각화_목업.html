@@ -273,6 +273,36 @@ body{
 .top-nav-name{font-size:13px;font-weight:700;color:rgba(255,255,255,.8)}
 .top-nav-badge{font-size:11px;font-weight:700;color:rgba(255,255,255,.55);background:rgba(255,255,255,.1);border-radius:8px;padding:4px 10px;letter-spacing:.3px}
 .top-nav-dot{width:7px;height:7px;background:#a78bfa;border-radius:50%;box-shadow:0 0 7px #a78bfa;flex-shrink:0}
+
+/* ── Device scaler ── */
+.device-scaler{display:contents}
+
+/* ── 반응형 ── */
+html{overflow-x:hidden}
+@media (max-width:500px){
+  body{padding:12px 12px 32px}
+  .top-nav{padding:8px 12px;gap:8px}
+  .top-nav-name{font-size:12px}
+  .top-nav-badge{display:none}
+  .top-nav-dot{display:none}
+  .ctrl-bar{gap:8px;padding:10px 14px}
+  .ctrl-group{flex-wrap:wrap;justify-content:center}
+  .ctrl-sep{display:none}
+  .cbtn{font-size:11px;padding:5px 10px}
+  .ctrl-label{font-size:10px}
+  .web-wrap.show{display:none !important}
+  .cbtn[data-v="web"]{opacity:.4;pointer-events:none}
+  .device-scaler{
+    display:flex;
+    justify-content:flex-start;
+    align-items:flex-start;
+    overflow:hidden;
+    position:relative;
+    box-shadow:0 24px 60px rgba(0,0,0,.45),inset 0 0 0 1.5px rgba(255,255,255,.2);
+    flex-shrink:0;
+  }
+  .device{box-shadow:none !important;flex-shrink:0;transform-origin:top left}
+}
 </style>
 </head>
 <body>
@@ -306,6 +336,7 @@ body{
 <!-- ═══════ MOBILE FRAME ═══════ -->
 <div class="mobile-wrap" id="mobile-wrap">
   <div class="frame-label" id="mobile-label">강의 페이지 · 시작 전 상태</div>
+  <div class="device-scaler" id="device-scaler">
   <div class="device" id="app">
 
     <!-- SCREEN 1 · MAIN -->
@@ -412,6 +443,7 @@ body{
       <div id="t-notif" class="toast">✅ 수요일·금요일 오후 8시에 알림을 드릴게요!</div>
     </section>
   </div><!-- .device -->
+  </div><!-- .device-scaler -->
 </div><!-- .mobile-wrap -->
 
 <!-- ═══════ WEB FRAME ═══════ -->
@@ -770,6 +802,30 @@ function saveNotif(){
 ════════════════════════════════════════ */
 renderMain();
 openLecture();
+
+/* ════ RESPONSIVE DEVICE SCALE ════ */
+function scaleDevice(){
+  const scaler=document.getElementById('device-scaler');
+  const device=document.getElementById('app');
+  if(!scaler||!device) return;
+  const vw=window.innerWidth;
+  if(vw<=500){
+    const scale=(vw-24)/390;
+    scaler.style.width=(vw-24)+'px';
+    scaler.style.height=(scale*844)+'px';
+    scaler.style.borderRadius=(scale*44)+'px';
+    device.style.transform=`scale(${scale})`;
+    device.style.transformOrigin='top left';
+  } else {
+    scaler.style.width='';
+    scaler.style.height='';
+    scaler.style.borderRadius='';
+    device.style.transform='';
+    device.style.transformOrigin='';
+  }
+}
+scaleDevice();
+window.addEventListener('resize',scaleDevice);
 </script>
 </body>
 </html>

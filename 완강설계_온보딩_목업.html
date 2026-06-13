@@ -322,6 +322,47 @@ body{min-height:100vh;background:linear-gradient(145deg,#0f172a 0%,#1e3a8a 55%,#
 .top-nav-name{font-size:13px;font-weight:700;color:rgba(255,255,255,.8)}
 .top-nav-badge{font-size:11px;font-weight:700;color:rgba(255,255,255,.55);background:rgba(255,255,255,.1);border-radius:8px;padding:4px 10px;letter-spacing:.3px}
 .top-nav-dot{width:7px;height:7px;background:#4ade80;border-radius:50%;box-shadow:0 0 7px #4ade80;flex-shrink:0}
+
+/* ── Device scaler (좁은 화면에서 JS로 크기 제어) ── */
+.device-scaler{display:contents}
+
+/* ── 반응형 ── */
+html{overflow-x:hidden}
+@media (max-width:500px){
+  body{padding:12px 12px 32px}
+  /* Top nav: 한 줄로 압축 */
+  .top-nav{padding:8px 12px;gap:8px}
+  .top-nav-name{font-size:12px}
+  .top-nav-badge{display:none}
+  .top-nav-dot{display:none}
+  /* Ctrl bar: 플로우/화면 두 행으로 */
+  .ctrl-bar{gap:8px;padding:10px 14px}
+  .ctrl-group{flex-wrap:wrap;justify-content:center}
+  .ctrl-sep{display:none}
+  .cbtn{font-size:11px;padding:5px 10px}
+  .ctrl-label{font-size:10px}
+  /* 웹 프레임: 좁은 화면에서는 숨김 */
+  .web-wrap.show{display:none !important}
+  .cbtn[data-v="web"]{opacity:.4;pointer-events:none}
+  /* Device scaler: JS가 크기 채움 */
+  .device-scaler{
+    display:flex;
+    justify-content:flex-start;
+    align-items:flex-start;
+    overflow:hidden;
+    position:relative;
+    box-shadow:0 24px 60px rgba(0,0,0,.45),inset 0 0 0 1.5px rgba(255,255,255,.2);
+    flex-shrink:0;
+  }
+  .device{
+    box-shadow:none !important;
+    flex-shrink:0;
+    transform-origin:top left;
+  }
+}
+/* 강의 목록 텍스트 truncate (좁은 영역에서 넘침 방지) */
+.s-name,.ws-name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+.si>div:nth-child(2),.wsi>div:nth-child(2){min-width:0}
 </style>
 </head>
 <body>
@@ -355,6 +396,7 @@ body{min-height:100vh;background:linear-gradient(145deg,#0f172a 0%,#1e3a8a 55%,#
 <!-- ═══ MOBILE ═══ -->
 <div class="mobile-wrap" id="mobile-wrap">
   <div class="frame-label" id="mobile-label">구매 직후 → 온보딩 플로우</div>
+  <div class="device-scaler" id="device-scaler">
   <div class="device" id="app">
 
     <!-- S1 구매 완료 -->
@@ -631,6 +673,7 @@ body{min-height:100vh;background:linear-gradient(145deg,#0f172a 0%,#1e3a8a 55%,#
     </section>
 
   </div><!-- .device -->
+  </div><!-- .device-scaler -->
 </div><!-- .mobile-wrap -->
 
 <!-- ═══ WEB FRAME ═══ -->
@@ -1007,6 +1050,32 @@ function webCompleteSection(idx){
 /* ════ INIT ════ */
 renderCalendar(PACES[0].lecDays,PACES[0].target);
 setPreset('purchase');
+
+/* ════ RESPONSIVE DEVICE SCALE ════ */
+function scaleDevice(){
+  const scaler=document.getElementById('device-scaler');
+  const device=document.getElementById('app');
+  if(!scaler||!device) return;
+  const vw=window.innerWidth;
+  if(vw<=500){
+    const scale=(vw-24)/390;
+    const scaledH=scale*844;
+    const scaledR=scale*44;
+    scaler.style.width=(vw-24)+'px';
+    scaler.style.height=scaledH+'px';
+    scaler.style.borderRadius=scaledR+'px';
+    device.style.transform=`scale(${scale})`;
+    device.style.transformOrigin='top left';
+  } else {
+    scaler.style.width='';
+    scaler.style.height='';
+    scaler.style.borderRadius='';
+    device.style.transform='';
+    device.style.transformOrigin='';
+  }
+}
+scaleDevice();
+window.addEventListener('resize',scaleDevice);
 </script>
 </body>
 </html>
