@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>역량 시각화 — 인터랙티브 목업</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+button{font-family:inherit;cursor:pointer}
+select{font-family:inherit}
+
+body{
+  min-height:100vh;
+  background:linear-gradient(145deg,#3730a3 0%,#6d28d9 100%);
+  display:flex;flex-direction:column;align-items:center;
+  padding:28px 24px 48px;
+  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Apple SD Gothic Neo',sans-serif;
+}
+
+/* ══════════════════════════════════
+   CONTROLS BAR
+══════════════════════════════════ */
+.ctrl-bar{
+  display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:center;
+  background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);
+  border-radius:16px;padding:12px 20px;margin-bottom:20px;
+  backdrop-filter:blur(6px);
+}
+.ctrl-group{display:flex;align-items:center;gap:6px}
+.ctrl-label{font-size:11px;color:rgba(255,255,255,.5);font-weight:600;white-space:nowrap}
+.ctrl-sep{width:1px;height:22px;background:rgba(255,255,255,.2);margin:0 6px}
+.cbtn{
+  background:rgba(255,255,255,.12);color:rgba(255,255,255,.75);
+  border:1px solid rgba(255,255,255,.18);border-radius:8px;
+  padding:6px 13px;font-size:12px;font-weight:600;
+  transition:all .13s;white-space:nowrap;
+}
+.cbtn:hover{background:rgba(255,255,255,.22)}
+.cbtn.on{background:rgba(255,255,255,.95);color:#4338ca;border-color:transparent}
+
+/* ══════════════════════════════════
+   FRAME WRAPPERS
+══════════════════════════════════ */
+.mobile-wrap{display:flex;flex-direction:column;align-items:center;gap:12px}
+.web-wrap{display:none}
+.web-wrap.show{display:flex;flex-direction:column;align-items:center;gap:12px}
+.frame-label{font-size:11px;color:rgba(255,255,255,.45);letter-spacing:.4px}
+
+/* ══════════════════════════════════
+   MOBILE DEVICE FRAME
+══════════════════════════════════ */
+.device{
+  width:390px;height:844px;background:#f5f4fc;border-radius:44px;
+  box-shadow:0 48px 96px rgba(0,0,0,.45),inset 0 0 0 1.5px rgba(255,255,255,.2);
+  overflow:hidden;position:relative;
+}
+.screen{position:absolute;inset:0;display:none;flex-direction:column;background:#f5f4fc}
+.screen.active{display:flex}
+
+/* Status / Nav */
+.status{height:44px;padding:14px 24px 0;display:flex;justify-content:space-between;align-items:center;font-size:12px;font-weight:700;flex-shrink:0}
+.status.d{color:rgba(255,255,255,.8)}
+.status.l{color:#1a1a2e}
+.nav{display:flex;align-items:center;gap:10px;padding:6px 20px 10px;flex-shrink:0}
+.back{width:32px;height:32px;border-radius:50%;border:none;display:flex;align-items:center;justify-content:center;font-size:15px}
+.back.lt{background:rgba(255,255,255,.2);color:#fff}
+.back.dk{background:rgba(0,0,0,.06);color:#1a1a2e}
+.nav-t{font-size:15px;font-weight:700;flex:1}
+.nav-t.lt{color:#fff}
+.nav-t.dk{color:#1a1a2e}
+.scroll{flex:1;overflow-y:auto;overflow-x:hidden;padding:0 18px 24px}
+.scroll::-webkit-scrollbar{display:none}
+
+/* ── Main screen ── */
+.main-hero{background:linear-gradient(135deg,#6d5fe8,#9b8cf5);padding:4px 20px 24px;flex-shrink:0}
+.m-greet{font-size:20px;font-weight:800;color:#fff;margin-bottom:3px}
+.m-sub{font-size:13px;color:rgba(255,255,255,.75)}
+.sec-label{font-size:13px;font-weight:700;color:#1a1a2e;margin:18px 0 10px}
+.cc{background:#fff;border-radius:18px;padding:16px;box-shadow:0 2px 12px rgba(0,0,0,.07);cursor:pointer;transition:transform .14s}
+.cc:active{transform:scale(.98)}
+.cc-head{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+.cc-thumb{width:50px;height:50px;border-radius:12px;background:linear-gradient(135deg,#6d5fe8,#9b8cf5);display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0}
+.cc-ti{font-size:14px;font-weight:700;color:#1a1a2e;margin-bottom:2px}
+.cc-me{font-size:11px;color:#999}
+.char-chip{display:inline-flex;align-items:center;gap:5px;background:#ede9ff;border-radius:20px;padding:4px 10px;margin-bottom:10px}
+.chip-e{font-size:15px}
+.chip-t{font-size:11px;font-weight:700;color:#6d5fe8}
+.pw{background:#ede9ff;border-radius:4px;height:6px;overflow:hidden}
+.pf{height:100%;background:linear-gradient(90deg,#6d5fe8,#9b8cf5);border-radius:4px;transition:width .5s}
+.pt{font-size:11px;color:#aaa;margin-top:4px;text-align:right}
+
+/* ── Lecture hero ── */
+.lec-hero{background:linear-gradient(135deg,#6d5fe8,#9b8cf5);padding:4px 20px 22px;flex-shrink:0}
+.lec-ti{font-size:18px;font-weight:800;color:#fff;line-height:1.3;margin-bottom:3px}
+.lec-me{font-size:12px;color:rgba(255,255,255,.7)}
+
+/* ── Character Panel (mobile) ── */
+.cp{background:#fff;border-radius:20px;margin:-14px 0 14px;box-shadow:0 4px 20px rgba(109,95,232,.14);overflow:hidden}
+.cp-h{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;cursor:pointer;user-select:none}
+.cp-hl{display:flex;align-items:center;gap:7px}
+.cp-hi{font-size:16px}
+.cp-ht{font-size:13px;font-weight:700;color:#1a1a2e}
+.cp-lv{background:#ede9ff;color:#6d5fe8;font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px}
+.cp-arr{font-size:11px;color:#bbb;transition:transform .2s}
+.cp-arr.open{transform:rotate(180deg)}
+.cp-b{padding:0 16px 16px}
+.cp-b.hid{display:none}
+.cd{display:flex;align-items:center;gap:14px;background:#f8f7ff;border-radius:14px;padding:12px 14px;margin-bottom:14px}
+.ca{width:58px;height:58px;border-radius:50%;flex-shrink:0;background:linear-gradient(135deg,#ede9ff,#d8d0ff);display:flex;align-items:center;justify-content:center;font-size:30px;position:relative}
+.ca-dot{position:absolute;bottom:-2px;right:-2px;background:#6d5fe8;color:#fff;font-size:9px;font-weight:700;padding:2px 5px;border-radius:8px}
+.cn{font-size:15px;font-weight:800;color:#1a1a2e;margin-bottom:1px}
+.cs{font-size:11px;color:#aaa}
+.sg-lbl{font-size:10px;font-weight:700;color:#bbb;text-transform:uppercase;letter-spacing:.5px;margin-bottom:7px}
+.sk-row{display:flex;align-items:flex-start;gap:8px;padding:6px 0;border-bottom:1px solid #f0eeff;font-size:12.5px;color:#1a1a2e;line-height:1.4}
+.sk-row:last-child{border-bottom:none}
+.sk-row .ic{font-size:13px;flex-shrink:0;padding-top:1px}
+.sk-div{height:1px;background:#f0eeff;margin:11px 0}
+.nxt-badge{display:inline-block;background:#fff4ee;color:#e8703a;font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;margin-bottom:7px}
+.lk-row{display:flex;align-items:flex-start;gap:8px;padding:5px 0;font-size:12.5px;color:#ccc;line-height:1.4}
+.lk-row .ic{font-size:13px;flex-shrink:0;padding-top:1px}
+.disc{font-size:10px;color:#ccc;line-height:1.5;margin-top:10px;padding-top:10px;border-top:1px dashed #eee}
+.all-done{text-align:center;font-size:13px;font-weight:700;color:#6d5fe8;padding:8px 0}
+.notif-rb{display:flex;align-items:center;gap:8px;background:#fff;border:1.5px solid #e8e8f0;border-radius:14px;padding:12px 16px;width:100%;font-size:13px;font-weight:600;color:#1a1a2e;margin-bottom:14px}
+.notif-rb .arr{margin-left:auto;color:#ccc;font-size:12px}
+
+/* ── Curriculum (mobile) ── */
+.cu-card{background:#fff;border-radius:16px;padding:16px;box-shadow:0 2px 10px rgba(0,0,0,.05)}
+.cu-title{font-size:12px;font-weight:700;color:#bbb;margin-bottom:10px;text-transform:uppercase;letter-spacing:.3px}
+.si{display:flex;align-items:center;gap:11px;padding:10px 0;border-bottom:1px solid #f5f5fa}
+.si:last-child{border-bottom:none}
+.sn{width:28px;height:28px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700}
+.sn.todo{background:#f0eeff;color:#6d5fe8}
+.sn.done{background:#dcfce7;color:#22c55e}
+.sn.cur{background:#6d5fe8;color:#fff}
+.s-name{font-size:13px;font-weight:600;color:#1a1a2e;margin-bottom:1px}
+.s-dur{font-size:11px;color:#bbb}
+.s-play{margin-left:auto;background:#6d5fe8;color:#fff;border:none;border-radius:20px;padding:6px 13px;font-size:11px;font-weight:600;flex-shrink:0}
+.s-done{margin-left:auto;font-size:11px;color:#22c55e;font-weight:600}
+.s-cur{margin-left:auto;background:#fff4ee;color:#e8703a;border:1.5px solid #ffd4c0;border-radius:20px;padding:5px 12px;font-size:11px;font-weight:600;flex-shrink:0}
+
+/* ── Video screen ── */
+.vs{background:#111128!important}
+.vb{flex:1;display:flex;flex-direction:column;background:#111128;overflow:hidden}
+.va{flex:1;background:linear-gradient(160deg,#1a1a40,#2d2d6e);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px}
+.vt{font-size:16px;font-weight:800;color:#fff;text-align:center;padding:0 28px;line-height:1.4}
+.vp{width:64px;height:64px;border-radius:50%;background:rgba(109,95,232,.8);border:none;color:#fff;display:flex;align-items:center;justify-content:center;font-size:22px}
+.vh{font-size:12px;color:rgba(255,255,255,.4)}
+.vc{background:#111128;padding:16px 20px 24px;flex-shrink:0}
+.pt-bar{height:4px;background:rgba(255,255,255,.2);border-radius:2px;margin-bottom:10px;cursor:pointer;position:relative}
+.pt-fill{height:100%;background:#6d5fe8;border-radius:2px;width:0%;transition:width .2s}
+.vtime{display:flex;justify-content:space-between;font-size:11px;color:rgba(255,255,255,.4);margin-bottom:16px}
+.cbtn-big{width:100%;background:linear-gradient(135deg,#6d5fe8,#9b8cf5);color:#fff;border:none;border-radius:14px;padding:15px;font-size:15px;font-weight:700}
+
+/* ── Completion screen ── */
+.cmp{background:linear-gradient(160deg,#ede9ff 0%,#f8f7ff 55%)!important}
+.cmp-hero{text-align:center;padding:28px 20px 20px}
+.cmp-conf{font-size:36px;margin-bottom:10px;animation:bnc .5s ease}
+@keyframes bnc{0%,100%{transform:scale(1)}40%{transform:scale(1.35)}}
+.cmp-ti{font-size:22px;font-weight:800;color:#1a1a2e;margin-bottom:4px}
+.cmp-su{font-size:13px;color:#aaa}
+.lu-card{background:linear-gradient(135deg,#6d5fe8,#9b8cf5);border-radius:22px;padding:20px;margin:0 18px 14px;box-shadow:0 10px 28px rgba(109,95,232,.3);text-align:center}
+.lu-em{font-size:52px;margin-bottom:8px;animation:lup .55s ease}
+@keyframes lup{0%{transform:scale(.4) rotate(-15deg);opacity:0}65%{transform:scale(1.18) rotate(6deg)}100%{transform:scale(1) rotate(0);opacity:1}}
+.lu-nm{font-size:20px;font-weight:800;color:#fff;margin-bottom:4px}
+.lu-bg{display:inline-block;background:rgba(255,255,255,.2);border-radius:20px;padding:3px 12px;font-size:12px;color:rgba(255,255,255,.9);margin-bottom:14px}
+.lu-sk{background:rgba(255,255,255,.15);border-radius:12px;padding:11px 14px;text-align:left}
+.lu-sk-lbl{font-size:9px;color:rgba(255,255,255,.65);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px}
+.lu-sk-tx{font-size:13px;color:#fff;font-weight:600;line-height:1.4}
+.hk-card{background:#fff;border-radius:22px;margin:0 18px 14px;padding:18px;box-shadow:0 2px 14px rgba(0,0,0,.07)}
+.hk-ti{font-size:12px;font-weight:700;color:#bbb;margin-bottom:12px}
+.hk-prev{display:flex;align-items:center;gap:12px;background:#fff8f4;border-radius:12px;padding:12px;border:1.5px dashed #ffd4c0;margin-bottom:14px}
+.hk-ic{font-size:26px}
+.hk-sk{font-size:13px;font-weight:600;color:#1a1a2e;flex:1;line-height:1.4}
+.btn-p{width:100%;background:linear-gradient(135deg,#6d5fe8,#9b8cf5);color:#fff;border:none;border-radius:14px;padding:14px;font-size:15px;font-weight:700;margin-bottom:8px}
+.btn-g{width:100%;background:transparent;border:none;color:#bbb;padding:8px;font-size:13px}
+
+/* ── Notification screen ── */
+.n-intro{font-size:13px;color:#888;line-height:1.65;margin-bottom:16px}
+.n-block{background:#fff;border-radius:16px;padding:16px;margin-bottom:12px;box-shadow:0 2px 10px rgba(0,0,0,.05)}
+.n-bt{font-size:13px;font-weight:700;color:#1a1a2e;margin-bottom:12px}
+.day-row{display:flex;gap:5px}
+.dbt{flex:1;background:#f5f5fa;border:1.5px solid transparent;border-radius:10px;padding:9px 0;font-size:12px;font-weight:700;color:#aaa;text-align:center;transition:all .13s}
+.dbt.sel{background:#ede9ff;border-color:#6d5fe8;color:#6d5fe8}
+.t-sel{width:100%;padding:12px 14px;border:1.5px solid #e8e8f0;border-radius:11px;font-size:14px;color:#1a1a2e;background:#fff;appearance:none}
+.n-prev{background:#f8f7ff;border-radius:12px;padding:14px;font-size:12px;color:#555;line-height:1.7;border-left:3px solid #6d5fe8}
+.save-btn{width:100%;background:linear-gradient(135deg,#6d5fe8,#9b8cf5);color:#fff;border:none;border-radius:14px;padding:16px;font-size:15px;font-weight:700;margin-top:4px}
+
+/* Toast */
+.toast{position:absolute;bottom:28px;left:50%;transform:translateX(-50%) translateY(70px);background:#1a1a2e;color:#fff;padding:11px 20px;border-radius:12px;font-size:13px;font-weight:600;white-space:nowrap;transition:transform .28s cubic-bezier(.34,1.56,.64,1);z-index:99;pointer-events:none}
+.toast.show{transform:translateX(-50%) translateY(0)}
+
+/* ══════════════════════════════════
+   WEB BROWSER FRAME
+══════════════════════════════════ */
+.browser{
+  width:960px;border-radius:14px;overflow:hidden;
+  box-shadow:0 40px 80px rgba(0,0,0,.45);
+}
+.browser-bar{background:#e2e2e4;padding:10px 16px;display:flex;align-items:center;gap:10px}
+.dots{display:flex;gap:5px}
+.dot{width:11px;height:11px;border-radius:50%}
+.dot.r{background:#ff5f57}.dot.y{background:#febc2e}.dot.g{background:#28c840}
+.addr{flex:1;background:#fff;border-radius:6px;padding:5px 14px;font-size:12px;color:#888;text-align:center}
+
+.web-page{background:#f8f8fb;max-height:640px;overflow-y:auto}
+.web-page::-webkit-scrollbar{display:none}
+
+/* Web header */
+.w-header{background:#fff;border-bottom:1px solid #eee;padding:0 40px;display:flex;align-items:center;height:56px;flex-shrink:0}
+.w-logo{font-size:15px;font-weight:800;color:#6d5fe8;margin-right:28px;white-space:nowrap}
+.w-nav{display:flex;gap:22px}
+.w-nav span{font-size:13px;color:#aaa;cursor:pointer}
+.w-nav span.act{color:#1a1a2e;font-weight:600}
+.w-user{margin-left:auto;font-size:13px;color:#aaa;white-space:nowrap}
+
+/* Web content */
+.w-content{padding:28px 40px}
+.w-bc{font-size:12px;color:#aaa;margin-bottom:5px}
+.w-ti{font-size:22px;font-weight:800;color:#1a1a2e;margin-bottom:3px}
+.w-me{font-size:13px;color:#aaa;margin-bottom:22px}
+
+.w-body{display:grid;grid-template-columns:1fr 320px;gap:22px;align-items:start}
+
+/* Web video / content left */
+.w-complete-banner{background:linear-gradient(135deg,#6d5fe8,#9b8cf5);border-radius:16px;padding:18px 22px;margin-bottom:18px;display:flex;align-items:center;gap:16px;color:#fff}
+.wcb-em{font-size:36px}
+.wcb-ti{font-size:17px;font-weight:800;margin-bottom:2px}
+.wcb-su{font-size:12px;opacity:.8}
+.w-video{background:linear-gradient(160deg,#1a1a40,#2d2d6e);border-radius:16px;height:200px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;margin-bottom:18px;cursor:pointer}
+.wv-ti{font-size:14px;font-weight:700;color:#fff;text-align:center;padding:0 20px}
+.wv-play{width:48px;height:48px;background:rgba(109,95,232,.8);border:none;border-radius:50%;color:#fff;font-size:16px;display:flex;align-items:center;justify-content:center}
+.wv-hint{font-size:11px;color:rgba(255,255,255,.4)}
+.w-curr-ti{font-size:13px;font-weight:700;color:#1a1a2e;margin-bottom:10px}
+.w-curr{background:#fff;border-radius:14px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.05)}
+.wsi{display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid #f5f5fa}
+.wsi:last-child{border-bottom:none}
+.wsn{width:28px;height:28px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700}
+.wsn.todo{background:#f0eeff;color:#6d5fe8}.wsn.done{background:#dcfce7;color:#22c55e}.wsn.cur{background:#6d5fe8;color:#fff}
+.ws-name{font-size:13px;font-weight:600;color:#1a1a2e;margin-bottom:1px}
+.ws-dur{font-size:11px;color:#bbb}
+.ws-btn{margin-left:auto;background:#6d5fe8;color:#fff;border:none;border-radius:20px;padding:6px 14px;font-size:12px;font-weight:600;flex-shrink:0}
+.ws-done{margin-left:auto;font-size:11px;color:#22c55e;font-weight:600}
+.ws-cur{margin-left:auto;background:#fff4ee;color:#e8703a;border:1.5px solid #ffd4c0;border-radius:20px;padding:5px 12px;font-size:12px;font-weight:600;flex-shrink:0}
+
+/* Web character panel (right sidebar) */
+.w-cp{background:#fff;border-radius:18px;box-shadow:0 4px 18px rgba(109,95,232,.12);overflow:hidden;position:sticky;top:12px}
+.w-cp-head{background:linear-gradient(135deg,#6d5fe8,#9b8cf5);padding:14px 18px;display:flex;align-items:center;gap:8px}
+.w-cp-ic{font-size:16px}
+.w-cp-ti{font-size:13px;font-weight:700;color:#fff;flex:1}
+.w-cp-lv{font-size:10px;font-weight:700;color:rgba(255,255,255,.85);background:rgba(255,255,255,.2);padding:2px 8px;border-radius:10px}
+.w-cd{padding:14px 18px;display:flex;align-items:center;gap:12px;background:#f8f7ff;border-bottom:1px solid #eee}
+.w-ca{font-size:32px}
+.w-cn{font-size:14px;font-weight:800;color:#1a1a2e;margin-bottom:1px}
+.w-cs{font-size:11px;color:#aaa}
+.w-sk-area{padding:14px 18px}
+.w-sg-lbl{font-size:10px;font-weight:700;color:#bbb;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px}
+.w-sk-row{display:flex;align-items:flex-start;gap:7px;padding:5px 0;border-bottom:1px solid #f5f5fa;font-size:12px;color:#1a1a2e;line-height:1.4}
+.w-sk-row:last-child{border-bottom:none}
+.w-sk-row .ic{flex-shrink:0;font-size:12px;padding-top:1px}
+.w-lk-row{display:flex;align-items:flex-start;gap:7px;padding:5px 0;font-size:12px;color:#ccc;line-height:1.4}
+.w-lk-row .ic{flex-shrink:0;font-size:12px;padding-top:1px}
+.w-nxt-badge{display:inline-block;background:#fff4ee;color:#e8703a;font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;margin-bottom:7px}
+.w-sk-div{height:1px;background:#f0eeff;margin:10px 0}
+.w-all-done{text-align:center;font-size:12px;font-weight:700;color:#6d5fe8;padding:6px 0}
+.w-notif{display:flex;align-items:center;gap:8px;width:100%;padding:12px 18px;background:#f8f7ff;border:none;border-top:1px solid #eee;font-size:12px;font-weight:600;color:#6d5fe8;cursor:pointer}
+.w-disc{font-size:10px;color:#ccc;padding:10px 18px;border-top:1px solid #f0eeff;line-height:1.5}
+
+/* ── Top Nav ── */
+.top-nav{width:100%;max-width:1100px;display:flex;align-items:center;justify-content:space-between;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.22);border-radius:14px;padding:10px 18px;margin-bottom:14px;backdrop-filter:blur(8px)}
+.top-nav-back{display:flex;align-items:center;gap:8px;color:#fff;text-decoration:none;font-size:13px;font-weight:700;background:rgba(255,255,255,.18);border:1.5px solid rgba(255,255,255,.35);border-radius:10px;padding:7px 16px;transition:background .15s;white-space:nowrap}
+.top-nav-back:hover{background:rgba(255,255,255,.3)}
+.top-nav-info{display:flex;align-items:center;gap:10px}
+.top-nav-name{font-size:13px;font-weight:700;color:rgba(255,255,255,.8)}
+.top-nav-badge{font-size:11px;font-weight:700;color:rgba(255,255,255,.55);background:rgba(255,255,255,.1);border-radius:8px;padding:4px 10px;letter-spacing:.3px}
+.top-nav-dot{width:7px;height:7px;background:#a78bfa;border-radius:50%;box-shadow:0 0 7px #a78bfa;flex-shrink:0}
+</style>
+</head>
+<body>
+
+<!-- ═══ TOP NAV ═══ -->
+<div class="top-nav">
+  <a class="top-nav-back" href="index.html">← 목록으로 돌아가기</a>
+  <div class="top-nav-info">
+    <span class="top-nav-name">🏁 FinishLine MVP</span>
+    <span class="top-nav-badge">역량 시각화</span>
+    <div class="top-nav-dot"></div>
+  </div>
+</div>
+
+<!-- ═══════ CONTROLS ═══════ -->
+<div class="ctrl-bar">
+  <div class="ctrl-group">
+    <span class="ctrl-label">학습 시점</span>
+    <button class="cbtn on" data-p="0" onclick="setPreset(0)">🌱 시작 전</button>
+    <button class="cbtn" data-p="2" onclick="setPreset(2)">🧙 중간 (2강)</button>
+    <button class="cbtn" data-p="5" onclick="setPreset(5)">🏆 완료 (5강)</button>
+  </div>
+  <div class="ctrl-sep"></div>
+  <div class="ctrl-group">
+    <span class="ctrl-label">화면</span>
+    <button class="cbtn on" data-v="mobile" onclick="setView('mobile')">📱 모바일</button>
+    <button class="cbtn" data-v="web" onclick="setView('web')">🖥 웹</button>
+  </div>
+</div>
+
+<!-- ═══════ MOBILE FRAME ═══════ -->
+<div class="mobile-wrap" id="mobile-wrap">
+  <div class="frame-label" id="mobile-label">강의 페이지 · 시작 전 상태</div>
+  <div class="device" id="app">
+
+    <!-- SCREEN 1 · MAIN -->
+    <section id="s-main" class="screen">
+      <div class="status d" style="background:linear-gradient(135deg,#6d5fe8,#9b8cf5)"><span>9:41</span><span>●●● 🔋</span></div>
+      <div class="main-hero"><div class="m-greet">안녕하세요 👋</div><div class="m-sub">오늘도 캐릭터를 성장시켜 봐요!</div></div>
+      <div class="scroll"><div class="sec-label">📚 수강 중인 강의</div><div id="m-cards"></div></div>
+      <div id="t-main" class="toast">✅ 알림이 설정되었어요!</div>
+    </section>
+
+    <!-- SCREEN 2 · LECTURE -->
+    <section id="s-lec" class="screen">
+      <div class="status d" style="background:linear-gradient(135deg,#6d5fe8,#9b8cf5)"><span style="color:rgba(255,255,255,.8)">9:41</span><span style="color:rgba(255,255,255,.8)">●●● 🔋</span></div>
+      <div class="lec-hero">
+        <div class="nav" style="padding:0 0 10px">
+          <button class="back lt" onclick="showScreen('s-main')">←</button>
+          <div class="nav-t lt" id="lec-nav"></div>
+        </div>
+        <div class="lec-ti" id="lec-ti"></div>
+        <div class="lec-me" id="lec-me"></div>
+      </div>
+      <div class="scroll" style="padding-top:0">
+        <div class="cp">
+          <div class="cp-h" onclick="toggleCP()">
+            <div class="cp-hl"><span class="cp-hi">🎮</span><span class="cp-ht">내 학습 캐릭터</span><span class="cp-lv" id="cp-lv">Lv.0</span></div>
+            <span class="cp-arr open" id="cp-arr">▲</span>
+          </div>
+          <div class="cp-b" id="cp-body">
+            <div class="cd">
+              <div class="ca"><span id="c-em">🌱</span><div class="ca-dot" id="c-dot">0</div></div>
+              <div><div class="cn" id="c-nm">새싹</div><div class="cs" id="c-su">아직 강의를 시작하지 않았어요</div></div>
+            </div>
+            <div id="cp-acq"></div>
+            <div id="cp-nxt"></div>
+            <div class="disc">ℹ️ 역량 표현은 학습 가이드이며, 실제 숙련도는 개인차가 있어요.</div>
+          </div>
+        </div>
+        <button class="notif-rb" onclick="showScreen('s-notif')">🔔<span>캐릭터 성장 알림 설정</span><span class="arr">›</span></button>
+        <div class="cu-card"><div class="cu-title">커리큘럼</div><div id="cu-list"></div></div>
+      </div>
+    </section>
+
+    <!-- SCREEN 3 · VIDEO -->
+    <section id="s-vid" class="screen vs">
+      <div class="vb">
+        <div class="status d" style="background:#111128"><span>9:41</span><span>●●● 🔋</span></div>
+        <div class="nav" style="background:#111128;padding:4px 20px 10px">
+          <button class="back lt" onclick="showScreen('s-lec')">←</button>
+          <div class="nav-t lt" id="vid-nav" style="font-size:13px"></div>
+        </div>
+        <div class="va"><div class="vt" id="vid-ti"></div><button class="vp">▶</button><div class="vh">영상 재생 시뮬레이션</div></div>
+        <div class="vc">
+          <div class="pt-bar" onclick="scrubVid(event)"><div class="pt-fill" id="vid-fill"></div></div>
+          <div class="vtime"><span>0:00</span><span id="vid-dur">25:00</span></div>
+          <button class="cbtn-big" onclick="completeSection()">✅ 수강 완료</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- SCREEN 4 · COMPLETION -->
+    <section id="s-cmp" class="screen cmp">
+      <div class="status l"><span>9:41</span><span>●●● 🔋</span></div>
+      <div class="scroll" style="padding-top:0">
+        <div class="cmp-hero">
+          <div class="cmp-conf">🎉</div>
+          <div class="cmp-ti">새 능력을 얻었어요!</div>
+          <div class="cmp-su" id="cmp-su"></div>
+        </div>
+        <div class="lu-card">
+          <div class="lu-em" id="lu-em">🌿</div>
+          <div class="lu-nm" id="lu-nm">탐험가</div>
+          <div class="lu-bg" id="lu-bg">Lv.1로 성장했어요!</div>
+          <div class="lu-sk"><div class="lu-sk-lbl">방금 획득한 능력</div><div class="lu-sk-tx" id="lu-sk"></div></div>
+        </div>
+        <div class="hk-card" id="hk-card"></div>
+      </div>
+    </section>
+
+    <!-- SCREEN 5 · NOTIFICATION -->
+    <section id="s-notif" class="screen">
+      <div class="status l"><span>9:41</span><span>●●● 🔋</span></div>
+      <div class="nav"><button class="back dk" onclick="showScreen('s-lec')">←</button><div class="nav-t dk">캐릭터 성장 알림</div></div>
+      <div class="scroll" style="padding-top:4px">
+        <div class="n-intro">강의를 안 들으면 캐릭터가 성장을 멈춰요.<br>알림으로 다시 불러드릴게요 🌟</div>
+        <div class="n-block"><div class="n-bt">📅 알림 받을 요일</div>
+          <div class="day-row">
+            <button class="dbt" data-d="0" onclick="toggleDay(0)">월</button>
+            <button class="dbt" data-d="1" onclick="toggleDay(1)">화</button>
+            <button class="dbt sel" data-d="2" onclick="toggleDay(2)">수</button>
+            <button class="dbt" data-d="3" onclick="toggleDay(3)">목</button>
+            <button class="dbt sel" data-d="4" onclick="toggleDay(4)">금</button>
+            <button class="dbt" data-d="5" onclick="toggleDay(5)">토</button>
+            <button class="dbt" data-d="6" onclick="toggleDay(6)">일</button>
+          </div>
+        </div>
+        <div class="n-block"><div class="n-bt">⏰ 알림 시간</div>
+          <select class="t-sel"><option>오전 7:00</option><option>오전 8:00</option><option>오전 9:00</option><option selected>오후 8:00</option><option>오후 9:00</option><option>오후 10:00</option></select>
+        </div>
+        <div class="n-block"><div class="n-bt">💬 알림 미리보기</div>
+          <div class="n-prev" id="notif-prev">📚 <strong>3일째 캐릭터가 쉬고 있어요.</strong><br><br>내 캐릭터는 지금: "변수에 값을 저장할 수 있어요" ✅<br>1강 더 들으면: "조건에 따라 다른 동작을 만들 수 있어요" 🔒<br><br>오늘 30분 투자해 볼까요? →</div>
+        </div>
+        <button class="save-btn" onclick="saveNotif()">저장하기</button>
+      </div>
+      <div id="t-notif" class="toast">✅ 수요일·금요일 오후 8시에 알림을 드릴게요!</div>
+    </section>
+  </div><!-- .device -->
+</div><!-- .mobile-wrap -->
+
+<!-- ═══════ WEB FRAME ═══════ -->
+<div class="web-wrap" id="web-wrap">
+  <div class="frame-label" id="web-label">강의 페이지 · 시작 전 상태</div>
+  <div class="browser">
+    <div class="browser-bar">
+      <div class="dots"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div>
+      <div class="addr">🔒 skillup.kr/lecture/python-basic</div>
+    </div>
+    <div class="web-page">
+      <div class="w-header">
+        <div class="w-logo">🐍 SkillUp</div>
+        <div class="w-nav"><span class="act">강의</span><span>마이페이지</span><span>커뮤니티</span></div>
+        <div class="w-user">김수강 님 ▾</div>
+      </div>
+      <div class="w-content" id="web-content"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ════════════════════════════════════════
+   DATA MODEL
+════════════════════════════════════════ */
+const LEC = {
+  title:'파이썬 기초부터 실전까지',
+  instructor:'김파이썬 강사',
+  thumb:'🐍',
+  sections:[
+    {id:1, title:'변수와 자료형',        dur:23, skill:'변수에 값을 저장하고 꺼낼 수 있어요',           watched:false},
+    {id:2, title:'조건문 (if/elif/else)', dur:28, skill:'조건에 따라 다른 동작을 만들 수 있어요',       watched:false},
+    {id:3, title:'반복문 (for/while)',    dur:31, skill:'반복 작업을 자동화할 수 있어요',               watched:false},
+    {id:4, title:'함수 설계하기',         dur:35, skill:'재사용 가능한 함수를 직접 만들 수 있어요',     watched:false},
+    {id:5, title:'실전 미니 프로젝트',    dur:45, skill:'파이썬으로 나만의 프로그램을 완성할 수 있어요', watched:false},
+  ]
+};
+
+const CHARS=[
+  {lv:0,em:'🌱',nm:'새싹',   su:'아직 강의를 시작하지 않았어요', from:0},
+  {lv:1,em:'🌿',nm:'탐험가', su:'첫 발을 내딛었어요!',            from:1},
+  {lv:2,em:'🧙',nm:'입문자', su:'실력이 하나씩 쌓이고 있어요!',   from:2},
+  {lv:3,em:'💡',nm:'성장가', su:'이제 꽤 많은 걸 할 수 있어요!',  from:3},
+  {lv:4,em:'🚀',nm:'고수',   su:'거의 완성 단계예요! 조금만 더!', from:4},
+  {lv:5,em:'🏆',nm:'완성자', su:'모든 역량을 갖췄어요! 🎊',       from:5},
+];
+
+let viewMode='mobile', presetN=0, currentSecId=null, cpOpen=true;
+
+/* ── Helpers ── */
+function watchedCount(){ return LEC.sections.filter(s=>s.watched).length; }
+function charOf(n){ let c=CHARS[0]; for(const ch of CHARS){ if(n>=ch.from)c=ch; } return c; }
+function currentChar(){ return charOf(watchedCount()); }
+function acquiredSecs(){ return LEC.sections.filter(s=>s.watched); }
+function nextSec(){ return LEC.sections.find(s=>!s.watched)||null; }
+function nextN(n=2){ return LEC.sections.filter(s=>!s.watched).slice(0,n); }
+
+/* ════════════════════════════════════════
+   PRESET & VIEW CONTROLS
+════════════════════════════════════════ */
+function setPreset(n){
+  presetN=n;
+  LEC.sections.forEach((s,i)=>{ s.watched=i<n; });
+  // Update preset button styles
+  document.querySelectorAll('.cbtn[data-p]').forEach(b=>b.classList.toggle('on', b.dataset.p==n));
+
+  const stateLabel=['시작 전 상태','시작 전 상태','중간 (2강 완료) 상태','중간 (3강 완료) 상태','중간 (4강 완료) 상태','완료 상태'];
+  const lbl=`강의 페이지 · ${stateLabel[n]||''}`;
+  document.getElementById('mobile-label').textContent=lbl;
+  document.getElementById('web-label').textContent=lbl;
+
+  if(viewMode==='mobile'){
+    renderMain();
+    openLecture();
+  } else {
+    renderWeb();
+  }
+}
+
+function setView(v){
+  viewMode=v;
+  document.querySelectorAll('.cbtn[data-v]').forEach(b=>b.classList.toggle('on', b.dataset.v===v));
+  document.getElementById('mobile-wrap').style.display= v==='mobile'?'flex':'none';
+  document.getElementById('web-wrap').classList.toggle('show', v==='web');
+  if(v==='web') renderWeb();
+  else { renderMain(); openLecture(); }
+}
+
+/* ════════════════════════════════════════
+   MOBILE RENDER
+════════════════════════════════════════ */
+function renderMain(){
+  const c=currentChar(), done=watchedCount(), total=LEC.sections.length;
+  const pct=Math.round(done/total*100);
+  document.getElementById('m-cards').innerHTML=`
+    <div class="cc" onclick="openLecture()">
+      <div class="cc-head">
+        <div class="cc-thumb">${LEC.thumb}</div>
+        <div><div class="cc-ti">${LEC.title}</div><div class="cc-me">${LEC.instructor} · ${total}강</div></div>
+      </div>
+      <div class="char-chip"><span class="chip-e">${c.em}</span><span class="chip-t">${c.nm} Lv.${c.lv}</span></div>
+      <div class="pw"><div class="pf" style="width:${pct}%"></div></div>
+      <div class="pt">${done}/${total}강 완료 · ${pct}%</div>
+    </div>`;
+}
+
+function renderCharPanel(){
+  const c=currentChar(), acq=acquiredSecs(), nxt=nextN(2);
+  document.getElementById('cp-lv').textContent=`Lv.${c.lv}`;
+  document.getElementById('c-em').textContent=c.em;
+  document.getElementById('c-dot').textContent=c.lv;
+  document.getElementById('c-nm').textContent=c.nm;
+  document.getElementById('c-su').textContent=c.su;
+
+  const acqEl=document.getElementById('cp-acq');
+  if(acq.length===0){
+    acqEl.innerHTML=`
+      <div class="sg-lbl">🔒 이 강의를 다 들으면 할 수 있는 일</div>
+      ${LEC.sections.map(s=>`<div class="lk-row"><span class="ic">🔒</span><span>${s.skill}</span></div>`).join('')}
+      <div style="text-align:center;margin-top:12px;font-size:12px;color:#6d5fe8;font-weight:700">1강부터 시작해봐요! ✨</div>`;
+  } else {
+    acqEl.innerHTML=`
+      <div class="sg-lbl">✅ 지금 할 수 있는 일</div>
+      ${acq.map(s=>`<div class="sk-row"><span class="ic">✅</span><span>${s.skill}</span></div>`).join('')}`;
+  }
+
+  const nxtEl=document.getElementById('cp-nxt');
+  if(acq.length===0){ nxtEl.innerHTML=''; }
+  else if(nxt.length>0){
+    const cnt=nxt.length===1?'1강':`${nxt.length}강`;
+    nxtEl.innerHTML=`
+      <div class="sk-div"></div>
+      <div class="nxt-badge">🔒 ${cnt} 더 들으면</div>
+      ${nxt.map(s=>`<div class="lk-row"><span class="ic">🔒</span><span>${s.skill}</span></div>`).join('')}`;
+  } else {
+    nxtEl.innerHTML=`<div class="sk-div"></div><div class="all-done">🎊 모든 능력을 획득했어요!</div>`;
+  }
+}
+
+function renderCurriculum(){
+  const done=watchedCount(), nxt=nextSec();
+  document.getElementById('cu-list').innerHTML=LEC.sections.map(s=>{
+    const isCur=nxt&&s.id===nxt.id&&done>0;
+    const cls=s.watched?'done':isCur?'cur':'todo';
+    const num=s.watched?'✓':s.id;
+    const action=s.watched
+      ?`<span class="s-done">완료 ✓</span>`
+      :isCur
+        ?`<button class="s-cur" onclick="startSection(${s.id})">▶ 이어서 수강</button>`
+        :`<button class="s-play" onclick="startSection(${s.id})">▶ 수강</button>`;
+    return `<div class="si">
+      <div class="sn ${cls}">${num}</div>
+      <div style="flex:1;min-width:0"><div class="s-name">${s.title}</div><div class="s-dur">${s.dur}분</div></div>
+      ${action}
+    </div>`;
+  }).join('');
+}
+
+/* ════════════════════════════════════════
+   WEB RENDER
+════════════════════════════════════════ */
+function renderWeb(){
+  const c=currentChar(), acq=acquiredSecs(), nxt=nextN(2), done=watchedCount(), total=LEC.sections.length;
+  const allDone=done===total, firstUnwatched=nextSec();
+
+  // Left: video area
+  let videoHTML='';
+  if(allDone){
+    videoHTML=`
+      <div class="w-complete-banner">
+        <div class="wcb-em">🏆</div>
+        <div><div class="wcb-ti">완강을 축하해요!</div><div class="wcb-su">모든 강의를 완료하고 캐릭터가 최고 레벨에 도달했어요.</div></div>
+      </div>`;
+  } else if(done===0){
+    videoHTML=`
+      <div class="w-video">
+        <div class="wv-ti">1강. ${LEC.sections[0].title}</div>
+        <button class="wv-play">▶</button>
+        <div class="wv-hint">클릭하여 첫 강의 시작</div>
+      </div>`;
+  } else {
+    videoHTML=`
+      <div class="w-video">
+        <div class="wv-ti">${firstUnwatched.id}강. ${firstUnwatched.title}</div>
+        <button class="wv-play">▶</button>
+        <div class="wv-hint">클릭하여 이어서 수강</div>
+      </div>`;
+  }
+
+  // Curriculum
+  const currHTML=LEC.sections.map(s=>{
+    const isCur=firstUnwatched&&s.id===firstUnwatched.id&&done>0;
+    const cls=s.watched?'done':isCur?'cur':'todo';
+    const num=s.watched?'✓':s.id;
+    const action=s.watched
+      ?`<span class="ws-done">완료 ✓</span>`
+      :isCur
+        ?`<button class="ws-cur">▶ 이어서 수강</button>`
+        :`<button class="ws-btn">▶ 수강</button>`;
+    return `<div class="wsi">
+      <div class="wsn ${cls}">${num}</div>
+      <div style="flex:1;min-width:0"><div class="ws-name">${s.title}</div><div class="ws-dur">${s.dur}분</div></div>
+      ${action}
+    </div>`;
+  }).join('');
+
+  // Right: character panel
+  let acqHTML='', nxtHTML='';
+  if(acq.length===0){
+    acqHTML=`
+      <div class="w-sg-lbl">🔒 이 강의를 다 들으면 할 수 있는 일</div>
+      ${LEC.sections.map(s=>`<div class="w-lk-row"><span class="ic">🔒</span><span>${s.skill}</span></div>`).join('')}
+      <div style="text-align:center;margin-top:10px;font-size:12px;color:#6d5fe8;font-weight:700">1강부터 시작해봐요! ✨</div>`;
+  } else {
+    acqHTML=`
+      <div class="w-sg-lbl">✅ 지금 할 수 있는 일</div>
+      ${acq.map(s=>`<div class="w-sk-row"><span class="ic">✅</span><span>${s.skill}</span></div>`).join('')}`;
+    if(nxt.length>0){
+      const cnt=nxt.length===1?'1강':`${nxt.length}강`;
+      nxtHTML=`
+        <div class="w-sk-div"></div>
+        <div class="w-nxt-badge">🔒 ${cnt} 더 들으면</div>
+        ${nxt.map(s=>`<div class="w-lk-row"><span class="ic">🔒</span><span>${s.skill}</span></div>`).join('')}`;
+    } else {
+      nxtHTML=`<div class="w-sk-div"></div><div class="w-all-done">🎊 모든 능력을 획득했어요!</div>`;
+    }
+  }
+
+  document.getElementById('web-content').innerHTML=`
+    <div class="w-bc">홈 › 강의 › 파이썬</div>
+    <div class="w-ti">${LEC.title}</div>
+    <div class="w-me">${LEC.instructor} · ${total}강 · ${done}/${total} 완료</div>
+    <div class="w-body">
+      <div class="w-left">
+        ${videoHTML}
+        <div class="w-curr-ti">📋 커리큘럼</div>
+        <div class="w-curr">${currHTML}</div>
+      </div>
+      <div class="w-right">
+        <div class="w-cp">
+          <div class="w-cp-head">
+            <span class="w-cp-ic">🎮</span>
+            <span class="w-cp-ti">내 학습 캐릭터</span>
+            <span class="w-cp-lv">Lv.${c.lv}</span>
+          </div>
+          <div class="w-cd">
+            <div class="w-ca">${c.em}</div>
+            <div><div class="w-cn">${c.nm}</div><div class="w-cs">${c.su}</div></div>
+          </div>
+          <div class="w-sk-area">
+            ${acqHTML}
+            ${nxtHTML}
+          </div>
+          <button class="w-notif">🔔 알림 설정하기 ›</button>
+          <div class="w-disc">ℹ️ 역량 표현은 학습 가이드이며, 실제 숙련도는 개인차가 있어요.</div>
+        </div>
+      </div>
+    </div>`;
+}
+
+/* ════════════════════════════════════════
+   MOBILE NAVIGATION
+════════════════════════════════════════ */
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+function openLecture(){
+  document.getElementById('lec-nav').textContent=LEC.title;
+  document.getElementById('lec-ti').textContent=LEC.title;
+  document.getElementById('lec-me').textContent=`${LEC.instructor} · ${LEC.sections.length}강`;
+  renderCharPanel();
+  renderCurriculum();
+  showScreen('s-lec');
+}
+
+function startSection(sid){
+  const s=LEC.sections.find(x=>x.id===sid);
+  if(!s)return;
+  currentSecId=sid;
+  document.getElementById('vid-nav').textContent=`${s.id}강. ${s.title}`;
+  document.getElementById('vid-ti').textContent=`${s.id}강. ${s.title}`;
+  document.getElementById('vid-dur').textContent=`${s.dur}:00`;
+  document.getElementById('vid-fill').style.width='0%';
+  showScreen('s-vid');
+}
+
+function completeSection(){
+  const s=LEC.sections.find(x=>x.id===currentSecId);
+  if(!s){showScreen('s-lec');return;}
+  const prevLv=currentChar().lv;
+  s.watched=true;
+  const nc=currentChar(), nxt=nextSec();
+  document.getElementById('cmp-su').textContent=`${s.id}강 완료!`;
+  document.getElementById('lu-em').textContent=nc.em;
+  document.getElementById('lu-nm').textContent=nc.nm;
+  document.getElementById('lu-bg').textContent=nc.lv>prevLv?`Lv.${nc.lv}로 성장했어요! 🎉`:`${nc.nm} Lv.${nc.lv}`;
+  document.getElementById('lu-sk').textContent=s.skill;
+  const hk=document.getElementById('hk-card');
+  if(nxt){
+    hk.innerHTML=`<div class="hk-ti">🔒 다음 강의를 들으면…</div>
+      <div class="hk-prev"><span class="hk-ic">🔓</span><span class="hk-sk">${nxt.skill}</span></div>
+      <button class="btn-p" onclick="startSection(${nxt.id})">${nxt.id}강 바로 보기 ▶</button>
+      <button class="btn-g" onclick="goLec()">오늘은 여기까지</button>`;
+  } else {
+    hk.innerHTML=`<div style="text-align:center;padding:8px 0">
+      <div style="font-size:40px;margin-bottom:8px">🏆</div>
+      <div style="font-size:17px;font-weight:800;color:#1a1a2e;margin-bottom:4px">완강을 축하해요!</div>
+      <div style="font-size:13px;color:#aaa;margin-bottom:16px">모든 역량을 획득했어요</div>
+      <button class="btn-p" onclick="showScreen('s-main')">홈으로 돌아가기</button></div>`;
+  }
+  renderMain();
+  showScreen('s-cmp');
+}
+
+function goLec(){
+  renderCharPanel();
+  renderCurriculum();
+  showScreen('s-lec');
+}
+
+function toggleCP(){
+  cpOpen=!cpOpen;
+  document.getElementById('cp-body').classList.toggle('hid',!cpOpen);
+  const a=document.getElementById('cp-arr');
+  a.classList.toggle('open',cpOpen);
+  a.textContent=cpOpen?'▲':'▼';
+}
+
+function scrubVid(e){
+  const t=document.getElementById('pt-bar')||e.currentTarget;
+  const r=e.currentTarget.getBoundingClientRect();
+  const p=Math.min(100,Math.max(0,(e.clientX-r.left)/r.width*100));
+  document.getElementById('vid-fill').style.width=p+'%';
+}
+
+function toggleDay(d){ document.querySelector(`.dbt[data-d="${d}"]`).classList.toggle('sel'); }
+
+function saveNotif(){
+  const t=document.getElementById('t-notif');
+  t.classList.add('show');
+  setTimeout(()=>{
+    t.classList.remove('show');
+    goLec();
+    setTimeout(()=>{
+      const mt=document.getElementById('t-main');
+      mt.classList.add('show');
+      setTimeout(()=>mt.classList.remove('show'),2200);
+    },300);
+  },1800);
+}
+
+/* ════════════════════════════════════════
+   INIT
+════════════════════════════════════════ */
+renderMain();
+openLecture();
+</script>
+</body>
+</html>

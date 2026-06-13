@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FinishLine — MVP 목업</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{min-height:100vh;background:linear-gradient(145deg,#0f172a 0%,#1e3a8a 55%,#2563eb 100%);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Apple SD Gothic Neo',sans-serif;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 24px}
+.hero{text-align:center;margin-bottom:48px}
+.logo{font-size:40px;margin-bottom:16px}
+.title{font-size:32px;font-weight:800;color:#fff;margin-bottom:8px}
+.subtitle{font-size:16px;color:rgba(255,255,255,.65);line-height:1.6;max-width:480px}
+.badge{display:inline-block;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);border-radius:20px;padding:6px 16px;font-size:12px;font-weight:700;color:rgba(255,255,255,.8);margin-bottom:20px;letter-spacing:.4px}
+.cards{display:flex;flex-direction:column;gap:16px;width:100%;max-width:480px}
+.card{background:#fff;border-radius:22px;padding:24px 28px;box-shadow:0 20px 60px rgba(0,0,0,.3);text-decoration:none;transition:transform .2s,box-shadow .2s;display:flex;align-items:center;gap:20px}
+.card:hover{transform:translateY(-4px);box-shadow:0 30px 80px rgba(0,0,0,.4)}
+.card-ic{width:56px;height:56px;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0}
+.card-ic.blue{background:linear-gradient(135deg,#1d4ed8,#3b82f6)}
+.card-ic.purple{background:linear-gradient(135deg,#6d5fe8,#a78bfa)}
+.card-body{flex:1}
+.card-tag{font-size:11px;font-weight:700;color:#94a3b8;letter-spacing:.4px;text-transform:uppercase;margin-bottom:4px}
+.card-title{font-size:17px;font-weight:800;color:#1a1a2e;margin-bottom:3px}
+.card-desc{font-size:13px;color:#64748b;line-height:1.5}
+.card-arr{font-size:20px;color:#cbd5e1;flex-shrink:0}
+.footer{margin-top:40px;text-align:center;font-size:12px;color:rgba(255,255,255,.35);line-height:1.8}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="logo">🏁</div>
+  <div class="badge">MVP 목업 · 2026.06</div>
+  <div class="title">FinishLine</div>
+  <div class="subtitle">결제하고 멈춘 강의를 끝까지 듣게 돕는 서비스.<br>아래 목업을 클릭하여 화면을 확인해주세요.</div>
+</div>
+
+<div class="cards">
+  <a class="card" href="완강설계_온보딩_목업.html">
+    <div class="card-ic blue">📋</div>
+    <div class="card-body">
+      <div class="card-tag">솔루션 E · 핵심 플로우</div>
+      <div class="card-title">완강 설계 온보딩</div>
+      <div class="card-desc">구매 직후 완강 플랜을 설정하는 온보딩 플로우.<br>모바일 + 웹, 3가지 플로우 상태 체험 가능</div>
+    </div>
+    <div class="card-arr">›</div>
+  </a>
+
+  <a class="card" href="역량시각화_목업.html">
+    <div class="card-ic purple">🌱</div>
+    <div class="card-body">
+      <div class="card-tag">솔루션 C · 참고 목업</div>
+      <div class="card-title">역량 시각화</div>
+      <div class="card-desc">수강할수록 캐릭터가 성장하며 역량이 쌓이는 플로우.<br>비교 참고용</div>
+    </div>
+    <div class="card-arr">›</div>
+  </a>
+</div>
+
+<div class="footer">
+  FinishLine MVP · 에듀테크 부트캠프 팀 프로젝트<br>
+  피드백은 설문 링크 또는 연락처로 보내주세요 😊
+</div>
+
+</body>
+</html>
