@@ -385,6 +385,10 @@ html{overflow-x:hidden}
     <button class="cbtn on" data-v="mobile" onclick="setView('mobile')">📱 모바일</button>
     <button class="cbtn" data-v="web" onclick="setView('web')">🖥 웹</button>
   </div>
+  <div class="ctrl-sep"></div>
+  <div class="ctrl-group">
+    <button class="cbtn" onclick="showNotifQuick()">🔔 알림 미리보기</button>
+  </div>
 </div>
 
 <!-- ═══════ MOBILE FRAME ═══════ -->
@@ -649,6 +653,10 @@ function setPreset(n){
   }
 }
 
+function showNotifQuick(){
+  setView('mobile');
+  showScreen('s-notif-onboard');
+}
 function setView(v){
   viewMode=v;
   document.querySelectorAll('.cbtn[data-v]').forEach(b=>b.classList.toggle('on', b.dataset.v===v));

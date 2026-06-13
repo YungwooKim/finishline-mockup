@@ -391,6 +391,10 @@ html{overflow-x:hidden}
     <button class="cbtn on" data-v="mobile" onclick="setView('mobile')">📱 모바일</button>
     <button class="cbtn" data-v="web" onclick="setView('web')">🖥 웹</button>
   </div>
+  <div class="ctrl-sep"></div>
+  <div class="ctrl-group">
+    <button class="cbtn" onclick="showNotifQuick()">🔔 알림 미리보기</button>
+  </div>
 </div>
 
 <!-- ═══ MOBILE ═══ -->
@@ -748,6 +752,11 @@ function showScreen(id){
 }
 function goBackFromNotif(){
   showScreen(ST.prevScreen||'s-step4');
+}
+function showNotifQuick(){
+  setView('mobile');
+  ST.prevScreen = ST.prevScreen||'s-step4';
+  showScreen('s-notif');
 }
 function setReason(el,r){
   document.getElementById('reason-input').value=r;
