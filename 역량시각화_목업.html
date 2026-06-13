@@ -95,7 +95,7 @@ body{
 .lec-me{font-size:12px;color:rgba(255,255,255,.7)}
 
 /* ── Character Panel (mobile) ── */
-.cp{background:#fff;border-radius:20px;margin:-14px 0 14px;box-shadow:0 4px 20px rgba(109,95,232,.14);overflow:hidden}
+.cp{background:#fff;border-radius:20px;margin:0 0 14px;box-shadow:0 4px 20px rgba(109,95,232,.14);overflow:hidden}
 .cp-h{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;cursor:pointer;user-select:none}
 .cp-hl{display:flex;align-items:center;gap:7px}
 .cp-hi{font-size:16px}
@@ -184,6 +184,60 @@ body{
 .t-sel{width:100%;padding:12px 14px;border:1.5px solid #e8e8f0;border-radius:11px;font-size:14px;color:#1a1a2e;background:#fff;appearance:none}
 .n-prev{background:#f8f7ff;border-radius:12px;padding:14px;font-size:12px;color:#555;line-height:1.7;border-left:3px solid #6d5fe8}
 .save-btn{width:100%;background:linear-gradient(135deg,#6d5fe8,#9b8cf5);color:#fff;border:none;border-radius:14px;padding:16px;font-size:15px;font-weight:700;margin-top:4px}
+
+/* ── Notification Onboarding screen ── */
+.no-hero{background:linear-gradient(135deg,#6d5fe8,#9b8cf5);padding:20px 20px 24px;flex-shrink:0}
+.no-h-ti{font-size:20px;font-weight:800;color:#fff;margin-bottom:6px;line-height:1.3}
+.no-h-sub{font-size:13px;color:rgba(255,255,255,.75);line-height:1.6}
+.no-diff-box{background:rgba(255,255,255,.18);border-radius:12px;padding:10px 14px;margin-top:12px;font-size:12px;color:rgba(255,255,255,.9);font-weight:600;line-height:1.5}
+.no-card{background:#fff;border-radius:16px;box-shadow:0 2px 14px rgba(109,95,232,.1);margin-bottom:10px;overflow:hidden}
+.no-card-bar{height:3px;background:linear-gradient(90deg,#6d5fe8,#9b8cf5)}
+.no-card-inner{padding:13px 14px}
+.no-card-head{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.no-app-ic{width:26px;height:26px;background:linear-gradient(135deg,#6d5fe8,#9b8cf5);border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0}
+.no-app-nm{font-size:11px;font-weight:700;color:#aaa}
+.no-time{margin-left:auto;font-size:11px;color:#bbb}
+.no-scenario{display:inline-flex;align-items:center;gap:4px;background:#ede9ff;border-radius:8px;padding:3px 9px;font-size:10px;font-weight:700;color:#6d5fe8;margin-bottom:8px}
+.no-push-ti{font-size:14px;font-weight:700;color:#1a1a2e;margin-bottom:10px;line-height:1.35}
+.no-sec-lbl{font-size:10px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;margin-bottom:4px}
+.no-sec-lbl.green{color:#22c55e}
+.no-sec-lbl.orange{color:#e8703a}
+.no-sk-r{font-size:12.5px;color:#1a1a2e;font-weight:600;padding:3px 0;line-height:1.4;display:flex;align-items:flex-start;gap:6px}
+.no-sk-r.lk{color:#c4b5fd}
+.no-action{display:flex;justify-content:flex-end;margin-top:10px;padding-top:10px;border-top:1px solid #f0eeff}
+.no-action-btn{font-size:12px;font-weight:700;color:#6d5fe8;background:#ede9ff;border:none;border-radius:8px;padding:6px 13px;cursor:pointer}
+.no-proceed{width:100%;background:linear-gradient(135deg,#6d5fe8,#9b8cf5);color:#fff;border:none;border-radius:14px;padding:16px;font-size:15px;font-weight:700;margin-top:4px}
+.no-skip{width:100%;background:transparent;border:none;color:#bbb;padding:8px;font-size:13px;margin-top:2px}
+
+/* ── Mobile char panel — prominent visual header ── */
+.cp-vis{background:linear-gradient(135deg,#6d5fe8,#9b8cf5);padding:16px 18px;display:flex;align-items:center;gap:14px}
+.cpv-em{font-size:54px;flex-shrink:0;filter:drop-shadow(0 3px 8px rgba(0,0,0,.2))}
+.cpv-info{flex:1;min-width:0}
+.cpv-nm{font-size:18px;font-weight:800;color:#fff;line-height:1.2;margin-bottom:2px}
+.cpv-su{font-size:11px;color:rgba(255,255,255,.75);margin-bottom:8px}
+.cpv-bar-wrap{height:6px;background:rgba(255,255,255,.25);border-radius:3px;overflow:hidden;margin-bottom:4px}
+.cpv-bar{height:100%;background:#fff;border-radius:3px;transition:width .4s}
+.cpv-prog{font-size:10px;color:rgba(255,255,255,.65)}
+
+/* ── Web char panel — top accordion ── */
+.w-ct{background:#fff;border-radius:18px;box-shadow:0 4px 22px rgba(109,95,232,.14);overflow:hidden;margin-bottom:22px}
+.w-ct-head{background:linear-gradient(135deg,#6d5fe8,#9b8cf5);padding:18px 24px;display:flex;align-items:center;gap:16px;cursor:pointer;user-select:none}
+.w-ct-em{font-size:48px;flex-shrink:0;filter:drop-shadow(0 3px 8px rgba(0,0,0,.18))}
+.w-ct-char-info{flex:1;min-width:0}
+.w-ct-nm{font-size:20px;font-weight:800;color:#fff;margin-bottom:2px}
+.w-ct-su{font-size:12px;color:rgba(255,255,255,.75)}
+.w-ct-prog-area{display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0}
+.w-ct-bar-wrap{height:6px;width:140px;background:rgba(255,255,255,.25);border-radius:3px;overflow:hidden}
+.w-ct-bar{height:100%;background:#fff;border-radius:3px}
+.w-ct-prog-txt{font-size:11px;color:rgba(255,255,255,.75)}
+.w-ct-toggle{font-size:12px;font-weight:700;color:rgba(255,255,255,.9);white-space:nowrap;background:rgba(255,255,255,.18);border:1.5px solid rgba(255,255,255,.3);border-radius:8px;padding:7px 14px;flex-shrink:0;pointer-events:none}
+.w-ct-body{padding:20px 28px;display:grid;grid-template-columns:1fr 1fr;gap:0 40px}
+.w-ct-body.hid{display:none}
+.w-ct-col-lbl{font-size:10px;font-weight:700;color:#bbb;text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid #ede9ff}
+.w-ct-sk{display:flex;align-items:flex-start;gap:8px;padding:7px 0;border-bottom:1px solid #f8f7ff;font-size:13px;color:#1a1a2e;line-height:1.4}
+.w-ct-lk{display:flex;align-items:flex-start;gap:8px;padding:7px 0;border-bottom:1px solid #f8f7ff;font-size:13px;color:#c4b5fd;line-height:1.4}
+.w-ct-disc{font-size:10px;color:#ccc;padding:10px 28px 14px;border-top:1px solid #f0eeff}
+.w-body-single{display:flex;flex-direction:column;gap:0}
 
 /* Toast */
 .toast{position:absolute;bottom:28px;left:50%;transform:translateX(-50%) translateY(70px);background:#1a1a2e;color:#fff;padding:11px 20px;border-radius:12px;font-size:13px;font-weight:600;white-space:nowrap;transition:transform .28s cubic-bezier(.34,1.56,.64,1);z-index:99;pointer-events:none}
@@ -358,23 +412,22 @@ html{overflow-x:hidden}
         <div class="lec-ti" id="lec-ti"></div>
         <div class="lec-me" id="lec-me"></div>
       </div>
-      <div class="scroll" style="padding-top:0">
+      <div class="scroll" style="padding-top:14px">
         <div class="cp">
+          <!-- 항상 노출되는 캐릭터 시각화 배너 -->
+          <div class="cp-vis" id="cp-vis"></div>
+          <!-- 능력 목록 아코디언 -->
           <div class="cp-h" onclick="toggleCP()">
-            <div class="cp-hl"><span class="cp-hi">🎮</span><span class="cp-ht">내 학습 캐릭터</span><span class="cp-lv" id="cp-lv">Lv.0</span></div>
+            <div class="cp-hl"><span class="cp-hi">⚡</span><span class="cp-ht">내가 할 수 있는 일</span></div>
             <span class="cp-arr open" id="cp-arr">▲</span>
           </div>
           <div class="cp-b" id="cp-body">
-            <div class="cd">
-              <div class="ca"><span id="c-em">🌱</span><div class="ca-dot" id="c-dot">0</div></div>
-              <div><div class="cn" id="c-nm">새싹</div><div class="cs" id="c-su">아직 강의를 시작하지 않았어요</div></div>
-            </div>
             <div id="cp-acq"></div>
             <div id="cp-nxt"></div>
             <div class="disc">ℹ️ 역량 표현은 학습 가이드이며, 실제 숙련도는 개인차가 있어요.</div>
           </div>
         </div>
-        <button class="notif-rb" onclick="showScreen('s-notif')">🔔<span>캐릭터 성장 알림 설정</span><span class="arr">›</span></button>
+        <button class="notif-rb" onclick="showScreen('s-notif-onboard')">🔔<span>캐릭터 성장 알림 설정</span><span class="arr">›</span></button>
         <div class="cu-card"><div class="cu-title">커리큘럼</div><div id="cu-list"></div></div>
       </div>
     </section>
@@ -415,7 +468,80 @@ html{overflow-x:hidden}
       </div>
     </section>
 
-    <!-- SCREEN 5 · NOTIFICATION -->
+    <!-- SCREEN 5 · NOTIFICATION ONBOARDING -->
+    <section id="s-notif-onboard" class="screen">
+      <div class="status l"><span>9:41</span><span>●●● 🔋</span></div>
+      <div class="nav"><button class="back dk" onclick="showScreen('s-lec')">←</button><div class="nav-t dk">알림 미리보기</div></div>
+      <div class="scroll" style="padding-top:0">
+        <div class="no-hero">
+          <div class="no-h-ti">단순 알림이 아니에요 🔔</div>
+          <div class="no-h-sub">강의를 쉬면 "X일째 쉬었어요"가 아니라<br>지금 내가 뭘 할 수 있는지, 다음엔 무엇이 열리는지 알려드려요.</div>
+          <div class="no-diff-box">✨ 다른 서비스와의 차이점: 내 역량 기준으로 맞춤 설계된 알림</div>
+        </div>
+
+        <!-- 알림 예시 1: 수강 독려 -->
+        <div style="margin-top:14px">
+          <div class="no-card">
+            <div class="no-card-bar"></div>
+            <div class="no-card-inner">
+              <div class="no-card-head">
+                <div class="no-app-ic">🎮</div>
+                <span class="no-app-nm">FinishLine</span>
+                <span class="no-time">방금</span>
+              </div>
+              <div class="no-scenario">📅 수강 독려 · 3일 미수강 시</div>
+              <div class="no-push-ti">🌿 탐험가가 3일째 쉬고 있어요</div>
+              <div class="no-sec-lbl green">✅ 지금 할 수 있는 일</div>
+              <div class="no-sk-r">✅ 변수에 값을 저장하고 꺼낼 수 있어요</div>
+              <div class="no-sec-lbl orange" style="margin-top:8px">🔓 1강만 더 들으면 열려요</div>
+              <div class="no-sk-r lk">🔒 조건에 따라 다른 동작을 만들 수 있어요</div>
+              <div class="no-action"><button class="no-action-btn">강의 바로 가기 →</button></div>
+            </div>
+          </div>
+
+          <!-- 알림 예시 2: 레벨업 임박 -->
+          <div class="no-card">
+            <div class="no-card-bar"></div>
+            <div class="no-card-inner">
+              <div class="no-card-head">
+                <div class="no-app-ic">🎮</div>
+                <span class="no-app-nm">FinishLine</span>
+                <span class="no-time">방금</span>
+              </div>
+              <div class="no-scenario" style="background:#fff4ee;color:#e8703a">🚀 레벨업 임박</div>
+              <div class="no-push-ti">💡 성장가가 될 수 있어요! 1강 남았어요</div>
+              <div class="no-sec-lbl orange">🔓 이번 강의를 완료하면 잠금 해제</div>
+              <div class="no-sk-r lk">🔒 재사용 가능한 함수를 직접 만들 수 있어요</div>
+              <div style="margin-top:8px;background:#fff4ee;border-radius:10px;padding:8px 12px;font-size:12px;color:#e8703a;font-weight:600">Lv.2 → Lv.3 "성장가"로 진화해요 🎉</div>
+              <div class="no-action"><button class="no-action-btn">4강 바로 보기 →</button></div>
+            </div>
+          </div>
+
+          <!-- 알림 예시 3: 완강 임박 -->
+          <div class="no-card">
+            <div class="no-card-bar"></div>
+            <div class="no-card-inner">
+              <div class="no-card-head">
+                <div class="no-app-ic">🎮</div>
+                <span class="no-app-nm">FinishLine</span>
+                <span class="no-time">방금</span>
+              </div>
+              <div class="no-scenario" style="background:#f0fdf4;color:#16a34a">🏁 완강 임박</div>
+              <div class="no-push-ti">🚀 거의 다 왔어요! 마지막 1강이에요</div>
+              <div class="no-sec-lbl orange">🔓 마지막 강의 완료 시 획득</div>
+              <div class="no-sk-r lk">🔒 파이썬으로 나만의 프로그램을 완성할 수 있어요</div>
+              <div style="margin-top:8px;font-size:12px;color:#6d5fe8;font-weight:600">완강하면 Lv.5 🏆 최고 단계 달성!</div>
+              <div class="no-action"><button class="no-action-btn">마지막 강의 시작 →</button></div>
+            </div>
+          </div>
+        </div>
+
+        <button class="no-proceed" onclick="showScreen('s-notif')">알림 설정하기 →</button>
+        <button class="no-skip" onclick="showScreen('s-lec')">나중에 설정할게요</button>
+      </div>
+    </section>
+
+    <!-- SCREEN 6 · NOTIFICATION SETTINGS -->
     <section id="s-notif" class="screen">
       <div class="status l"><span>9:41</span><span>●●● 🔋</span></div>
       <div class="nav"><button class="back dk" onclick="showScreen('s-lec')">←</button><div class="nav-t dk">캐릭터 성장 알림</div></div>
@@ -552,11 +678,19 @@ function renderMain(){
 
 function renderCharPanel(){
   const c=currentChar(), acq=acquiredSecs(), nxt=nextN(2);
-  document.getElementById('cp-lv').textContent=`Lv.${c.lv}`;
-  document.getElementById('c-em').textContent=c.em;
-  document.getElementById('c-dot').textContent=c.lv;
-  document.getElementById('c-nm').textContent=c.nm;
-  document.getElementById('c-su').textContent=c.su;
+  const done=watchedCount(), total=LEC.sections.length;
+  const pct=Math.round(done/total*100);
+
+  // 항상-노출 캐릭터 시각화 배너
+  const visEl=document.getElementById('cp-vis');
+  if(visEl) visEl.innerHTML=`
+    <div class="cpv-em">${c.em}</div>
+    <div class="cpv-info">
+      <div class="cpv-nm">${c.nm} <span style="font-size:13px;opacity:.75;font-weight:600">Lv.${c.lv}</span></div>
+      <div class="cpv-su">${c.su}</div>
+      <div class="cpv-bar-wrap"><div class="cpv-bar" style="width:${pct}%"></div></div>
+      <div class="cpv-prog">${done}/${total}강 완료 · ${pct}%</div>
+    </div>`;
 
   const acqEl=document.getElementById('cp-acq');
   if(acq.length===0){
@@ -672,35 +806,61 @@ function renderWeb(){
     }
   }
 
+  // 웹 캐릭터 패널 상단 아코디언
+  let wAcqCols='', wNxtCols='';
+  if(acq.length===0){
+    wAcqCols=`<div style="grid-column:1/-1">
+      <div class="w-ct-col-lbl">🔒 강의를 완료하면 할 수 있는 일</div>
+      ${LEC.sections.map(s=>`<div class="w-ct-lk">🔒 <span>${s.skill}</span></div>`).join('')}
+      <div style="text-align:center;margin-top:12px;font-size:13px;color:#6d5fe8;font-weight:700">1강부터 시작해봐요! ✨</div>
+    </div>`;
+  } else {
+    wAcqCols=`<div>
+      <div class="w-ct-col-lbl">✅ 지금 할 수 있는 일</div>
+      ${acq.map(s=>`<div class="w-ct-sk">✅ <span>${s.skill}</span></div>`).join('')}
+    </div>`;
+    if(nxt.length>0){
+      const cnt=nxt.length===1?'1강':`${nxt.length}강`;
+      wNxtCols=`<div>
+        <div class="w-ct-col-lbl">🔒 ${cnt} 더 들으면 열려요</div>
+        ${nxt.map(s=>`<div class="w-ct-lk">🔒 <span>${s.skill}</span></div>`).join('')}
+      </div>`;
+    } else {
+      wNxtCols=`<div><div class="w-ct-col-lbl">🎊 완전 달성</div><div style="font-size:14px;font-weight:700;color:#6d5fe8;padding:10px 0">모든 역량을 획득했어요!</div></div>`;
+    }
+  }
+  const pct=Math.round(done/total*100);
+
   document.getElementById('web-content').innerHTML=`
     <div class="w-bc">홈 › 강의 › 파이썬</div>
     <div class="w-ti">${LEC.title}</div>
     <div class="w-me">${LEC.instructor} · ${total}강 · ${done}/${total} 완료</div>
-    <div class="w-body">
-      <div class="w-left">
-        ${videoHTML}
-        <div class="w-curr-ti">📋 커리큘럼</div>
-        <div class="w-curr">${currHTML}</div>
-      </div>
-      <div class="w-right">
-        <div class="w-cp">
-          <div class="w-cp-head">
-            <span class="w-cp-ic">🎮</span>
-            <span class="w-cp-ti">내 학습 캐릭터</span>
-            <span class="w-cp-lv">Lv.${c.lv}</span>
-          </div>
-          <div class="w-cd">
-            <div class="w-ca">${c.em}</div>
-            <div><div class="w-cn">${c.nm}</div><div class="w-cs">${c.su}</div></div>
-          </div>
-          <div class="w-sk-area">
-            ${acqHTML}
-            ${nxtHTML}
-          </div>
-          <button class="w-notif">🔔 알림 설정하기 ›</button>
-          <div class="w-disc">ℹ️ 역량 표현은 학습 가이드이며, 실제 숙련도는 개인차가 있어요.</div>
+
+    <!-- 캐릭터 패널: 메인 상단 아코디언 -->
+    <div class="w-ct">
+      <div class="w-ct-head" onclick="toggleWebCp()">
+        <div class="w-ct-em">${c.em}</div>
+        <div class="w-ct-char-info">
+          <div class="w-ct-nm">${c.nm} <span style="font-size:14px;opacity:.75;font-weight:600">Lv.${c.lv}</span></div>
+          <div class="w-ct-su">${c.su}</div>
         </div>
+        <div class="w-ct-prog-area">
+          <div class="w-ct-bar-wrap"><div class="w-ct-bar" style="width:${pct}%"></div></div>
+          <div class="w-ct-prog-txt">${done}/${total}강 · ${pct}%</div>
+        </div>
+        <div class="w-ct-toggle" id="w-ct-toggle-btn">능력 접기 ▲</div>
       </div>
+      <div class="w-ct-body" id="w-ct-body">
+        ${wAcqCols}${wNxtCols}
+      </div>
+      <div class="w-ct-disc">ℹ️ 역량 표현은 학습 가이드이며, 실제 숙련도는 개인차가 있어요.</div>
+    </div>
+
+    <!-- 비디오 + 커리큘럼: 단일 컬럼 -->
+    <div class="w-body-single">
+      ${videoHTML}
+      <div class="w-curr-ti">📋 커리큘럼</div>
+      <div class="w-curr">${currHTML}</div>
     </div>`;
 }
 
@@ -772,6 +932,15 @@ function toggleCP(){
   const a=document.getElementById('cp-arr');
   a.classList.toggle('open',cpOpen);
   a.textContent=cpOpen?'▲':'▼';
+}
+
+let webCpOpen=true;
+function toggleWebCp(){
+  webCpOpen=!webCpOpen;
+  const body=document.getElementById('w-ct-body');
+  const btn=document.getElementById('w-ct-toggle-btn');
+  if(body) body.classList.toggle('hid',!webCpOpen);
+  if(btn) btn.textContent=webCpOpen?'능력 접기 ▲':'능력 펼치기 ▼';
 }
 
 function scrubVid(e){
